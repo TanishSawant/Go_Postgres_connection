@@ -1,5 +1,6 @@
 package main
 
+//postgres://nggcyuahlnctol:b5e43ee627bdfa04bf8a2b035b2d1294cadd329069d5fa053b7dca275e7ff7bb@ec2-54-175-243-75.compute-1.amazonaws.com:5432/ddhcqh7dh5dbec
 import (
 	"encoding/json"
 	"fmt"
@@ -28,13 +29,13 @@ var (
 
 	cars = []Models.Car{
 
-		{Year: 2000, Make: "Toyota", ModelName: "Tundra", DriverID: 1},
+		{Year: "2000", Make: "Toyota", ModelName: "Tundra", DriverID: "1"},
 
-		{Year: 2001, Make: "Honda", ModelName: "Accord", DriverID: 1},
+		{Year: "2001", Make: "Honda", ModelName: "Accord", DriverID: "2"},
 
-		{Year: 2002, Make: "Nissan", ModelName: "Sentra", DriverID: 2},
+		{Year: "2002", Make: "Nissan", ModelName: "Sentra", DriverID: "3"},
 
-		{Year: 2003, Make: "Ford", ModelName: "F-150", DriverID: 3},
+		{Year: "2003", Make: "Ford", ModelName: "F-150", DriverID: "4"},
 	}
 )
 
@@ -96,6 +97,18 @@ func DeleteCar(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func createCar(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	year := vars["year"]
+	make := vars["make"]
+	modelname := vars["modelname"]
+	did := vars["driverid"]
+	fmt.Printf("year = %s, make = %s, model = %s", year, make, modelname)
+	db.Create(&Models.Car{Year: year, Make: make, ModelName: modelname, DriverID: did})
+	fmt.Fprintf(w, "New Car Successfully Created")
+
+}
+
 const (
 	host     = "localhost"
 	port     = 5432
@@ -110,7 +123,7 @@ func main() {
 
 	router := mux.NewRouter()
 
-	db, err = gorm.Open("postgres", "host=localhost port=5432 user=postgres dbname=postgres sslmode=disable password=pablo")
+	db, err = gorm.Open("postgres", "postgres://nggcyuahlnctol:b5e43ee627bdfa04bf8a2b035b2d1294cadd329069d5fa053b7dca275e7ff7bb@ec2-54-175-243-75.compute-1.amazonaws.com:5432/ddhcqh7dh5dbec")
 
 	if err != nil {
 		panic(err)
@@ -137,6 +150,8 @@ func main() {
 	router.HandleFunc("/drivers/{id}", GetDriver).Methods("GET")
 
 	router.HandleFunc("/cars/{id}", DeleteCar).Methods("DELETE")
+
+	router.HandleFunc("/cars/{year}/{make}/{modelname}/{driverid}", createCar).Methods("POST")
 
 	handler := cors.Default().Handler(router)
 

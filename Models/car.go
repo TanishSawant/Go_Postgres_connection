@@ -6,8 +6,8 @@ import "github.com/jinzhu/gorm"
 type Car struct {
 	gorm.Model
 
-	Year      int
+	Year      string
 	Make      string
 	ModelName string
-	DriverID  int
+	DriverID  string
 }
