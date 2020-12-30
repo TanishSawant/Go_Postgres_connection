@@ -1,1 +1,1 @@
-web: go_postgres.com
+web: ./bin/go_postgres.com
