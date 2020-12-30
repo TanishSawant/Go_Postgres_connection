@@ -123,6 +123,7 @@ func main() {
 
 	router := mux.NewRouter()
 
+	fmt.Println("Router created")
 	db, err = gorm.Open("postgres", "postgres://nggcyuahlnctol:b5e43ee627bdfa04bf8a2b035b2d1294cadd329069d5fa053b7dca275e7ff7bb@ec2-54-175-243-75.compute-1.amazonaws.com:5432/ddhcqh7dh5dbec")
 
 	if err != nil {
@@ -134,7 +135,7 @@ func main() {
 	db.AutoMigrate(&Models.Driver{})
 
 	db.AutoMigrate(&Models.Car{})
-
+	fmt.Println("Added to DB")
 	for index := range cars {
 		db.Create(&cars[index])
 	}
@@ -154,6 +155,6 @@ func main() {
 	router.HandleFunc("/cars/{year}/{make}/{modelname}/{driverid}", createCar).Methods("POST")
 
 	handler := cors.Default().Handler(router)
-
+	fmt.Println("Listening....")
 	log.Fatal(http.ListenAndServe(":8080", handler))
 }
