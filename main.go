@@ -109,6 +109,11 @@ func createCar(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func greetings(w http.ResponseWriter, r *http.Request) {
+	var greet = "Welcome!"
+	json.NewEncoder(w).Encode(&greet)
+}
+
 const (
 	host     = "localhost"
 	port     = 5432
@@ -143,6 +148,7 @@ func main() {
 	for index := range drivers {
 		db.Create(&drivers[index])
 	}
+	router.HandleFunc("/", greetings).Methods("GET")
 
 	router.HandleFunc("/cars", GetCars).Methods("GET")
 
